@@ -16,3 +16,7 @@ eureka:
     instance:
       prefer-ip-address: true
       ip-address: 127.0.0.1
+      lease-renewal-interval-in-seconds: 30
+      lease-expiration-duration-in-seconds: 90
+# 最小的单位续约时间（心跳），每隔30s一次心跳
+# 最小的失效时间，90s没有心跳，自动失效

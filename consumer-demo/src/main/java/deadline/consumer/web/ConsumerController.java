@@ -21,6 +21,12 @@ public class ConsumerController {
 
     @GetMapping("{id}")
     public User queryById(@PathVariable("id") Long id) {
+        // eureka 中存放的服务Instance是一个双层map
+        /*
+        * Applicatoin:USER-SERVICE    STATUS: 192.168.xx.xx:user-service:8081     ip:应用名:端口号
+        *
+        * 第二层的 map 是这个实例的对象本身
+        * */
 
         // 根据服务 id 获取实例
         List<ServiceInstance> instance = discoveryClient.getInstance("user-service");
