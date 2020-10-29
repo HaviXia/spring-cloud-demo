@@ -10,6 +10,8 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("consumer")
+//不能在每个方法上都写服务降级的逻辑
+@DefaultProperties(defaultFallback = "queryByIdFallBack")
 public class ConsumerController {
     @Autowired
     private RestTemplate restTemplate;
@@ -21,7 +23,7 @@ public class ConsumerController {
     private DiscoveryClient discoveryClient;
 
     @GetMapping("{id}")
-    @HystrixCommand(fallbackMethod = "queryByIdFallBack") //开启服务降级容错处理
+    @HystrixCommand //开启服务降级容错处理
 
     /*
      * 成功和失败的两个函数函数名不限制，但是返回值、参数列表 必须 完全一致！！！
@@ -34,6 +36,10 @@ public class ConsumerController {
     }
 
     public String queryByIdFallBack(@PathVariable("id") Long id) {
+        return "服务器正忙,请稍后再试";
+    }
+
+    public String queryByIdFallBack() {
         return "服务器正忙,请稍后再试";
     }
     //Ribbon 负载均衡
