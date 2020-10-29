@@ -1,0 +1,9 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/goTestDemo
+    username: root
+    password: Aa123456
+mybatis:
+  type-aliases-package: deadline.user.pojo

@@ -1,0 +1,15 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/goTestDemo
+    username: root
+    password: Aa123456
+mybatis:
+  type-aliases-package: deadline.user.pojo
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
