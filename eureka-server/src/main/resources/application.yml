@@ -8,6 +8,8 @@ eureka:
     service-url:
       defaultzone: http://127.0.0.1:10086/eureka,http://127.0.0.1:10087/eureka
     register-with-eureka: false
-
+  server:
+    eviction-interval-timer-in-ms: 300000
 # 把eureka注册到另外一个eureka上, 并且开始运行不会注册自己
+# 剔除时间，默认是60s
 

@@ -13,31 +13,47 @@ import org.springframework.web.client.RestTemplate;
 public class ConsumerController {
     @Autowired
     private RestTemplate restTemplate;
+//
+//    //动态注入 url
+//    @Autowired
 
-    //动态注入 url
     @Autowired
     private DiscoveryClient discoveryClient;
-    discoveryClient.getInstance();
 
     @GetMapping("{id}")
-    public User queryById(@PathVariable("id") Long id) {
-        // eureka 中存放的服务Instance是一个双层map
-        /*
-        * Applicatoin:USER-SERVICE    STATUS: 192.168.xx.xx:user-service:8081     ip:应用名:端口号
-        *
-        * 第二层的 map 是这个实例的对象本身
-        * */
+    @HystrixCommand(fallbackMethod = "queryByIdFallBack") //开启服务降级容错处理
 
-        // 根据服务 id 获取实例
-        List<ServiceInstance> instance = discoveryClient.getInstance("user-service");
+    /*
+     * 成功和失败的两个函数函数名不限制，但是返回值、参数列表 必须 完全一致！！！
+     * */
+    public String queryById(@PathVariable("id") Long id) {
+        String url = "http://user-service/user/" + id;
 
-        // 从实例中取出ip和端口
-
-        ServiceInstance instance = instance.get(0);
-
-        String url = "http://" + instance.getHost() + ":" + instance.getPort() + "/user/" + id;
-        System.out.println("url = " + url);
-        User user = restTemplate.getForObject(url, User.class);
+        String user = restTemplate.getForObject(url, String.class);
         return user;
     }
+
+    public String queryByIdFallBack(@PathVariable("id") Long id) {
+        return "服务器正忙,请稍后再试";
+    }
+    //Ribbon 负载均衡
+    // private RibbonLoadBalancerClient client;
+    // eureka 中存放的服务Instance是一个双层map
+    /*
+     * Applicatoin:USER-SERVICE    STATUS: 192.168.xx.xx:user-service:8081     ip:应用名:端口号
+     *
+     * 第二层的 map 是这个实例的对象本身
+     * */
+
+    // 根据服务 id 获取实例
+    //  List<ServiceInstance> instance = discoveryClient.getInstance("user-service");
+    // ServiceInstance instance = client.choose("user-service");
+
+    // 从实例中取出ip和端口
+
+    //ServiceInstance instance = instance.get(0);
+
+    //   String url = "http://" + instance.getHost() + ":" + instance.getPort() + "/user/" + id;
+    //System.ou t.println("url = " + url);
+
 }

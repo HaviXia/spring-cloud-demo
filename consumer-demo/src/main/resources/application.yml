@@ -12,3 +12,6 @@ eureka:
     prefer-ip-address: true
     ip-address: 127.0.0.1
 # 服务消费方要拉取服务列表，对应着拉取周期
+user-service:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
