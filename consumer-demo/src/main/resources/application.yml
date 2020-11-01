@@ -12,6 +12,19 @@ eureka:
     prefer-ip-address: true
     ip-address: 127.0.0.1
 # 服务消费方要拉取服务列表，对应着拉取周期
+feign:
+  hystrix:
+    enable: true
+ribbon:
+  ConnectionTimeOut: 550
+  ReadTimeOut: 1800
 user-service:
   ribbon:
     NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 2000

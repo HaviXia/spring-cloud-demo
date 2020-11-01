@@ -1,6 +1,8 @@
 package deadline.consumer.web;
 
+import deadline.consumer.client.UserClient;
 import deadline.consumer.pojo.User;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,26 +15,39 @@ import org.springframework.web.client.RestTemplate;
 //不能在每个方法上都写服务降级的逻辑
 @DefaultProperties(defaultFallback = "queryByIdFallBack")
 public class ConsumerController {
-    @Autowired
-    private RestTemplate restTemplate;
+//    @Autowired
+//    private RestTemplate restTemplate;
 //
 //    //动态注入 url
 //    @Autowired
 
     @Autowired
-    private DiscoveryClient discoveryClient;
+    private UserClient userClient;
 
-    @GetMapping("{id}")
-    @HystrixCommand //开启服务降级容错处理
+//    @Autowired
+//    private DiscoveryClient discoveryClient;
+
+
+    //  @HystrixCommand //开启服务降级容错处理
 
     /*
      * 成功和失败的两个函数函数名不限制，但是返回值、参数列表 必须 完全一致！！！
      * */
+//    @HystrixCommand(commandProperties = {
+//            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000") //时间由1s变成2s
+//    })
+    // @HystrixCommand
+    @GetMapping("{id}")
     public String queryById(@PathVariable("id") Long id) {
-        String url = "http://user-service/user/" + id;
+        //增加熔断，手动控制
+//        if (id % 2 == 0) {
+//            throw new RuntimeException("");
+//        }
 
-        String user = restTemplate.getForObject(url, String.class);
-        return user;
+        return userClient.queryById(id);
+//
+//        String user = restTemplate.getForObject(url, String.class);
+//        return user;
     }
 
     public String queryByIdFallBack(@PathVariable("id") Long id) {
@@ -40,7 +55,7 @@ public class ConsumerController {
     }
 
     public String queryByIdFallBack() {
-        return "服务器正忙,请稍后再试";
+        return "服务 器正忙,请稍后再试";
     }
     //Ribbon 负载均衡
     // private RibbonLoadBalancerClient client;

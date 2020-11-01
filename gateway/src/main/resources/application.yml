@@ -1,0 +1,37 @@
+server:
+  port: 10010
+# 路由规则
+zuul:
+
+  routes:
+    # key是路由id ,值是路由规则
+    # 以/user开头的请求，都转发到8081端口下
+    # 之后访问路径 :10010/user-service/user/
+    user-service: /user/**
+    # 去除前缀
+
+    #
+    user-services:
+      path:
+        serviceId:
+          strip-prefix: true # 去除 /user 前缀 ； false 不去除
+    #
+  ignored-services:
+    - consumer-service # 忽略 eureka 的默认路由配置  user-service 对应 user-service 请求路径
+eureka:
+  client:
+    registry-fetch-interval-seconds: 5 # 获取服务列表的周期：5s
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+      # zuul 内置了 hystrix
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000
+ribbon:
+  ConnectionTimeout: 500
+  ReadTimeout: 3000
+

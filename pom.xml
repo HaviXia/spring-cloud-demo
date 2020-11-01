@@ -11,6 +11,7 @@
         <module>user-service</module>
         <module>consumer-demo</module>
         <module>eureka-server</module>
+        <module>gateway</module>
     </modules>
     <!--聚合工程，父工程的打包方式-->
     <packaging>pom</packaging>
